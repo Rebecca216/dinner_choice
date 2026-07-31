@@ -1,8 +1,15 @@
 // 晚餐隨機轉盤 - 主程式應用邏輯 (app.js)
 
-import { PRESET_THEMES, generateRandomOptions, WHEEL_COLORS } from './data.js';
+import { PRESET_THEMES, generateRandomOptions, WHEEL_COLORS } from './data.js?v=1.2';
 import { DinnerWheel } from './wheel.js';
 import { ConfettiEffect } from './confetti.js';
+
+const FOOD_EMOJIS = [
+  '🍱', '🍜', '🍚', '🥟', '🍗', '🥩', '🍔', '🍕', 
+  '🌭', '🥪', '🌮', '🦪', '🍲', '🥘', '🍢', '🧋', 
+  '🍧', '🍰', '🥑', '🥗', '🍣', '🐙', '🍻', '🍦', 
+  '🍩', '🥐', '🍤', '🍿', '🍎', '🍓', '🍳', '🥞'
+];
 
 class DinnerApp {
   constructor() {
@@ -12,6 +19,7 @@ class DinnerApp {
     this.audioCtx = null;
 
     this.initDOMReferences();
+    this.initEmojiPicker();
     this.initWebAudio();
     this.initWheel();
     this.initConfetti();
@@ -38,7 +46,12 @@ class DinnerApp {
     this.activeCountBadge = document.getElementById('activeCountBadge');
 
     this.addOptionForm = document.getElementById('addOptionForm');
+    this.btnEmojiTrigger = document.getElementById('btnEmojiTrigger');
+    this.selectedEmojiDisplay = document.getElementById('selectedEmojiDisplay');
     this.inputEmoji = document.getElementById('inputEmoji');
+    this.emojiPopover = document.getElementById('emojiPopover');
+    this.btnCloseEmojiPopover = document.getElementById('btnCloseEmojiPopover');
+    this.emojiGrid = document.getElementById('emojiGrid');
     this.inputName = document.getElementById('inputName');
     this.optionsList = document.getElementById('optionsList');
 
@@ -55,14 +68,54 @@ class DinnerApp {
     this.modalEmoji = document.getElementById('modalEmoji');
     this.modalWinnerName = document.getElementById('modalWinnerName');
     this.modalWinnerDesc = document.getElementById('modalWinnerDesc');
-    this.modalCalories = document.getElementById('modalCalories');
+    this.modalTag = document.getElementById('modalTag');
     this.btnGoogleMaps = document.getElementById('btnGoogleMaps');
     this.btnSpinAgain = document.getElementById('btnSpinAgain');
     this.btnCloseModal = document.getElementById('btnCloseModal');
   }
 
+  initEmojiPicker() {
+    this.emojiGrid.innerHTML = '';
+    FOOD_EMOJIS.forEach(emoji => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'emoji-option-btn';
+      btn.textContent = emoji;
+      btn.addEventListener('click', () => {
+        this.selectedEmojiDisplay.textContent = emoji;
+        this.inputEmoji.value = emoji;
+        this.hideEmojiPopover();
+      });
+      this.emojiGrid.appendChild(btn);
+    });
+
+    this.btnEmojiTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggleEmojiPopover();
+    });
+
+    this.btnCloseEmojiPopover.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.hideEmojiPopover();
+    });
+
+    // 點擊彈窗外部關閉
+    document.addEventListener('click', (e) => {
+      if (!this.emojiPopover.contains(e.target) && e.target !== this.btnEmojiTrigger) {
+        this.hideEmojiPopover();
+      }
+    });
+  }
+
+  toggleEmojiPopover() {
+    this.emojiPopover.classList.toggle('hidden');
+  }
+
+  hideEmojiPopover() {
+    this.emojiPopover.classList.add('hidden');
+  }
+
   initWebAudio() {
-    // 簡單優雅的 Web Audio 音效產生器 (不需外部 mp3 檔案)
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (AudioContext) {
       this.audioCtx = new AudioContext();
@@ -90,9 +143,7 @@ class DinnerApp {
 
       osc.start();
       osc.stop(this.audioCtx.currentTime + 0.04);
-    } catch (e) {
-      // Audio autoplay restrictions safeguard
-    }
+    } catch (e) {}
   }
 
   playFanfareSound() {
@@ -185,7 +236,7 @@ class DinnerApp {
       return;
     }
 
-    this.options.forEach((opt, index) => {
+    this.options.forEach((opt) => {
       const item = document.createElement('div');
       item.className = 'option-item';
 
@@ -275,7 +326,7 @@ class DinnerApp {
     this.addOptionForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const name = this.inputName.value.trim();
-      const emoji = this.inputEmoji.value.trim() || '🍽️';
+      const emoji = this.inputEmoji.value || '🍔';
       if (!name) return;
 
       const newOpt = {
@@ -283,7 +334,7 @@ class DinnerApp {
         name,
         emoji,
         desc: '自訂推薦美食',
-        calories: '估計 500-700 kcal',
+        tag: '✨ 自訂美食推薦',
         weight: 1,
         enabled: true,
         color: WHEEL_COLORS[this.options.length % WHEEL_COLORS.length]
@@ -291,7 +342,6 @@ class DinnerApp {
 
       this.options.push(newOpt);
       this.inputName.value = '';
-      this.inputEmoji.value = '';
       this.updateOptionsUI();
     });
 
@@ -373,7 +423,7 @@ class DinnerApp {
     this.modalEmoji.textContent = winner.emoji || '🍱';
     this.modalWinnerName.textContent = winner.name;
     this.modalWinnerDesc.textContent = winner.desc || '美味晚餐的最佳選擇！';
-    this.modalCalories.textContent = winner.calories || '熱量適中';
+    this.modalTag.textContent = winner.tag || '✨ 美味推薦';
 
     // Google Maps Search Link
     const query = encodeURIComponent(`附近的 ${winner.name}`);
