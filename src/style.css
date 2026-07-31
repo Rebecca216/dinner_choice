@@ -408,6 +408,94 @@ body {
   display: flex;
   gap: 0.5rem;
 }
+
+/* Emoji Picker Dropdown & Popover */
+.emoji-picker-wrapper {
+  position: relative;
+}
+.btn-emoji-trigger {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 0.55rem 0.8rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1.2rem;
+  transition: var(--transition-fast);
+}
+.btn-emoji-trigger:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--color-primary);
+}
+.btn-emoji-trigger .arrow {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+
+.emoji-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 280px;
+  background: #1a172e;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  padding: 0.8rem;
+  z-index: 50;
+  backdrop-filter: blur(12px);
+}
+.emoji-popover.hidden {
+  display: none;
+}
+.popover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text-light);
+  margin-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.4rem;
+}
+.popover-close {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.popover-close:hover {
+  color: #fff;
+}
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.4rem;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.emoji-option-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid transparent;
+  font-size: 1.3rem;
+  border-radius: var(--radius-sm);
+  padding: 0.4rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.emoji-option-btn:hover {
+  transform: scale(1.2);
+  background: rgba(124, 77, 255, 0.3);
+  border-color: var(--color-primary);
+}
 .custom-input {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -611,14 +699,14 @@ body {
   color: var(--color-text-light);
   margin-bottom: 1rem;
 }
-.badge-calories {
-  background: rgba(255, 149, 0, 0.2);
-  color: #ff9500;
-  padding: 0.3rem 0.8rem;
+.badge-tag {
+  background: rgba(124, 77, 255, 0.2);
+  color: #c084fc;
+  padding: 0.35rem 0.9rem;
   border-radius: var(--radius-pill);
   font-size: 0.85rem;
   font-weight: 700;
-  border: 1px solid rgba(255, 149, 0, 0.4);
+  border: 1px solid rgba(124, 77, 255, 0.4);
 }
 
 .modal-buttons {
