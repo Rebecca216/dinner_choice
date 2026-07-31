@@ -88,7 +88,25 @@
         <div id="tabOptions" class="tab-content active">
           <form id="addOptionForm" class="add-option-form">
             <div class="input-group">
-              <input type="text" id="inputEmoji" class="custom-input emoji-input" placeholder="🍔" maxlength="2" />
+              <div class="emoji-picker-wrapper">
+                <button type="button" id="btnEmojiTrigger" class="btn-emoji-trigger" title="點擊選擇美食圖示">
+                  <span id="selectedEmojiDisplay">🍔</span>
+                  <span class="arrow">▼</span>
+                </button>
+                <input type="hidden" id="inputEmoji" value="🍔" />
+                
+                <!-- Emoji 選擇彈窗 -->
+                <div id="emojiPopover" class="emoji-popover hidden">
+                  <div class="popover-header">
+                    <span>選擇美食圖示</span>
+                    <button type="button" id="btnCloseEmojiPopover" class="popover-close">&times;</button>
+                  </div>
+                  <div class="emoji-grid" id="emojiGrid">
+                    <!-- JS 動態生成圖示按鈕 -->
+                  </div>
+                </div>
+              </div>
+
               <input type="text" id="inputName" class="custom-input name-input" placeholder="輸入美食名稱 (例如: 牛肉麵)" required />
               <button type="submit" class="btn btn-primary btn-add">
                 <span>➕ 新增</span>
@@ -133,7 +151,7 @@
         <p class="modal-desc" id="modalWinnerDesc">排骨便當、雞腿便當或控肉便當</p>
         
         <div class="modal-meta" id="modalMeta">
-          <span class="badge badge-calories">🔥 <span id="modalCalories">650 kcal</span></span>
+          <span class="badge badge-tag"><span id="modalTag">✨ 美味推薦</span></span>
         </div>
 
         <div class="modal-buttons">
@@ -157,6 +175,6 @@
     </footer>
   </div>
 
-  <script type="module" src="./src/js/app.js"></script>
+  <script type="module" src="./src/js/app.js?v=1.2"></script>
 </body>
 </html>
